@@ -4,45 +4,96 @@
 
 {% block content %}
 <main class="container mx-auto px-8 py-12 flex-grow">
-    <div class="max-w-2xl mx-auto">
-        <h1 class="text-4xl font-bold mb-8">About</h1>
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold mb-8">About myDashboard</h1>
 
-        <div class="space-y-6">
+        <div class="space-y-8">
+            <!-- 프로젝트 개요 섹션 -->
             <section>
-                <h2 class="text-2xl font-semibold mb-4">프로젝트 정보</h2>
-                <div class="bg-dark-secondary p-6 rounded-lg space-y-3">
-                    <p>제작일자: 250114</p>
-                    <p>제작자: HanSeongJun</p>
-                </div>
-            </section>
-
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">사용된 기술</h2>
-                <div class="bg-dark-secondary p-6 rounded-lg">
-                    <ul class="list-disc list-inside space-y-2">
-                        <li>FastAPI - 현대적인 Python 웹 프레임워크</li>
-                        <li>Uvicorn - ASGI 서버</li>
-                        <li>TailwindCSS - 유틸리티 우선 CSS 프레임워크</li>
-                        <li>Local Storage - 브라우저 데이터 저장소</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section>
-                <h2 class="text-2xl font-semibold mb-4">기능</h2>
+                <h2 class="text-2xl font-semibold mb-4">프로젝트 개요</h2>
                 <div class="bg-dark-secondary p-6 rounded-lg space-y-4">
                     <div>
-                        <h3 class="text-xl font-semibold mb-2">세계 시계</h3>
-                        <p>다양한 시간대의 현재 시각을 실시간으로 표시</p>
+                        <h3 class="text-xl font-semibold mb-2">기본 정보</h3>
+                        <div class="space-y-2">
+                            <p>제작일자: 250114</p>
+                            <p>제작자: HanSeongJun</p>
+                            <p>라이선스: MIT</p>
+                        </div>
                     </div>
                     <div>
-                        <h3 class="text-xl font-semibold mb-2">Google Trends</h3>
-                        <p>한국의 실시간 검색 트렌드를 시각적으로 표시</p>
+                        <h3 class="text-xl font-semibold mb-2">목적</h3>
+                        <p>크롬 브라우저의 시작 페이지로 활용할 수 있는 개인화된 대시보드를 제작하여, 필요한 정보를 한눈에 볼 수 있도록 구성했습니다.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 주요 기능 섹션 -->
+            <section>
+                <h2 class="text-2xl font-semibold mb-4">주요 기능</h2>
+                <div class="bg-dark-secondary p-6 rounded-lg space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">세계 시계</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>다중 시간대 동시 표시 (기본: 뉴욕, 런던, 서울)</li>
+                            <li>24시간 형식 지원</li>
+                            <li>Local Storage 기반 사용자 설정 저장</li>
+                        </ul>
                     </div>
                     <div>
-                        <h3 class="text-xl font-semibold mb-2">주식 지표</h3>
-                        <p>주요 글로벌 주식 지표의 실시간 동향을 그래프로 표시</p>
+                        <h3 class="text-xl font-semibold mb-3">Google Trends</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>실시간/일간 트렌드 토글 기능</li>
+                            <li>트렌드별 상세 뉴스 확장/축소</li>
+                            <li>5분 주기 자동 업데이트</li>
+                            <li>전체 뉴스 동시 확장/축소</li>
+                        </ul>
                     </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">시장 지표</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>주요 지표 실시간 모니터링 (나스닥, S&P 500, 다우존스, VIX)</li>
+                            <li>미국 국채 수익률 추적 (5년, 10년, 30년)</li>
+                            <li>차트 시각화 및 등락률 색상 구분</li>
+                            <li>5분 주기 자동 업데이트</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 기술 스택 섹션 -->
+            <section>
+                <h2 class="text-2xl font-semibold mb-4">기술 스택</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-dark-secondary p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3">백엔드</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>FastAPI - 현대적인 Python 웹 프레임워크</li>
+                            <li>Uvicorn - ASGI 서버</li>
+                            <li>yfinance - 주식 데이터 API</li>
+                            <li>httpx - 비동기 HTTP 클라이언트</li>
+                        </ul>
+                    </div>
+                    <div class="bg-dark-secondary p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3">프론트엔드</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>TailwindCSS - 유틸리티 우선 CSS 프레임워크</li>
+                            <li>Chart.js - 데이터 시각화</li>
+                            <li>Local Storage - 클라이언트 측 데이터 저장</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 보안 설계 섹션 -->
+            <section>
+                <h2 class="text-2xl font-semibold mb-4">보안 설계</h2>
+                <div class="bg-dark-secondary p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-3">CORS 정책</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>화이트리스트 기반 출처 제한</li>
+                        <li>HTTP 메서드 제한 (GET only)</li>
+                        <li>정적 파일 접근 제한</li>
+                    </ul>
                 </div>
             </section>
         </div>

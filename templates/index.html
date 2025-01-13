@@ -23,13 +23,18 @@
                 <div class="flex justify-between items-center mb-6">
                     <div class="flex items-center gap-4">
                         <h2 class="text-2xl font-bold">Google Trends</h2>
-                        <!-- 새로고침 타이머 추가 -->
+                        <!-- 새로고침 타이머 -->
                         <span id="trends-refresh-timer" class="text-sm text-gray-400">
                             (5:00)
                         </span>
                     </div>
                     <div class="flex items-center gap-4">
-                        <!-- 탭 버튼 추가 -->
+                        <!-- 전체 접기/펴기 버튼 추가 -->
+                        <button id="toggle-all-news"
+                            class="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors">
+                            전체 뉴스 펼치기
+                        </button>
+                        <!-- 탭 버튼 -->
                         <div id="trends-mode" class="flex rounded-lg overflow-hidden">
                             <button id="realtime-tab"
                                 class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 transition-colors">
@@ -40,10 +45,6 @@
                                 일간
                             </button>
                         </div>
-                        <button id="refresh-trends"
-                            class="bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                            새로고침
-                        </button>
                     </div>
                 </div>
                 <!-- 로딩 상태 표시 -->
