@@ -91,39 +91,56 @@
     // 개선된 비동기 차트 초기화 함수
     const initializeCharts = async () => {
         const charts = document.querySelectorAll('.market-chart');
-
-        // 모든 심볼에 대한 API 요청을 병렬로 실행
-        const requests = Array.from(charts).map(canvas => {
+        const pendingRequests = Array.from(charts).map(canvas => {
             const symbol = canvas.dataset.symbol;
-            return fetch(`http://localhost:30000/api/stocks?full=true&symbol=${symbol}`)
-                .then(response => response.json())
-                .then(data => ({
-                    canvas,
-                    symbol,
-                    data: data[symbol]
-                }))
-                .catch(error => ({
-                    canvas,
-                    symbol,
-                    error
-                }));
+            return {
+                promise: fetch(`http://localhost:30000/api/stocks?full=true&symbol=${symbol}`)
+                    .then(response => response.json())
+                    .then(data => ({
+                        canvas,
+                        symbol,
+                        data: data[symbol]
+                    }))
+                    .catch(error => ({
+                        canvas,
+                        symbol,
+                        error
+                    })),
+                canvas
+            };
         });
 
-        // 모든 요청을 병렬로 처리하고 결과를 기다림
-        const results = await Promise.all(requests);
+        // 완료된 요청을 추적하기 위한 Set
+        const completedRequests = new Set();
 
-        // 수신된 데이터를 즉시 차트로 변환
-        results.forEach(result => {
-            if (result.error) {
-                console.error(`Error loading chart for ${result.symbol}:`, result.error);
-                result.canvas.parentElement.innerHTML = `
-                    <div class="bg-red-900/50 rounded-lg p-4 text-center">
-                        <p class="text-red-200">차트 데이터를 불러오는데 실패했습니다.</p>
-                    </div>`;
-            } else {
-                createChart(result.canvas, result.data);
+        // 각 요청이 완료될 때마다 처리
+        while (pendingRequests.length > completedRequests.size) {
+            try {
+                // 아직 처리되지 않은 요청들만 필터링
+                const remainingPromises = pendingRequests
+                    .filter(req => !completedRequests.has(req.canvas))
+                    .map(req => req.promise);
+
+                // 가장 먼저 완료되는 요청 처리
+                const result = await Promise.race(remainingPromises);
+
+                if (result.error) {
+                    console.error(`Error loading chart for ${result.symbol}:`, result.error);
+                    result.canvas.parentElement.innerHTML = `
+                        <div class="bg-red-900/50 rounded-lg p-4 text-center">
+                            <p class="text-red-200">차트 데이터를 불러오는데 실패했습니다.</p>
+                        </div>`;
+                } else {
+                    createChart(result.canvas, result.data);
+                }
+
+                // 완료된 요청 기록
+                completedRequests.add(result.canvas);
+
+            } catch (error) {
+                console.error('Failed to process request:', error);
             }
-        });
+        }
     };
 
     document.addEventListener('DOMContentLoaded', initializeCharts);
