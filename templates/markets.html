@@ -41,66 +41,89 @@
 
 {% block scripts %}
 <script>
+    // 차트 생성 함수 분리
+    const createChart = (canvas, chartData) => {
+        // 로딩 인디케이터 제거
+        const container = canvas.parentElement;
+        container.querySelector('.chart-loading').style.display = 'none';
+
+        return new Chart(canvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: Array(chartData.history.length).fill('').map((_, i) => {
+                    const date = new Date();
+                    date.setDate(date.getDate() - (chartData.history.length - i - 1));
+                    return date.toLocaleDateString();
+                }),
+                datasets: [{
+                    label: canvas.closest('.bg-dark-secondary').querySelector('h2').textContent,
+                    data: chartData.history,
+                    borderColor: chartData.change_percent >= 0 ? '#4CAF50' : '#EF4444',
+                    tension: 0.1,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#333' },
+                        ticks: { color: '#999' }
+                    },
+                    y: {
+                        grid: { color: '#333' },
+                        ticks: { color: '#999' }
+                    }
+                }
+            }
+        });
+    };
+
+    // 개선된 비동기 차트 초기화 함수
     const initializeCharts = async () => {
         const charts = document.querySelectorAll('.market-chart');
 
-        for (const canvas of charts) {
+        // 모든 심볼에 대한 API 요청을 병렬로 실행
+        const requests = Array.from(charts).map(canvas => {
             const symbol = canvas.dataset.symbol;
-            try {
-                const response = await fetch(`http://localhost:30000/api/stocks?full=true&symbol=${symbol}`);
-                const data = await response.json();
-                const chartData = data[symbol];
+            return fetch(`http://localhost:30000/api/stocks?full=true&symbol=${symbol}`)
+                .then(response => response.json())
+                .then(data => ({
+                    canvas,
+                    symbol,
+                    data: data[symbol]
+                }))
+                .catch(error => ({
+                    canvas,
+                    symbol,
+                    error
+                }));
+        });
 
-                const container = canvas.parentElement;
-                container.querySelector('.chart-loading').style.display = 'none';
+        // 모든 요청을 병렬로 처리하고 결과를 기다림
+        const results = await Promise.all(requests);
 
-                new Chart(canvas.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels: Array(chartData.history.length).fill('').map((_, i) => {
-                            const date = new Date();
-                            date.setDate(date.getDate() - (chartData.history.length - i - 1));
-                            return date.toLocaleDateString();
-                        }),
-                        datasets: [{
-                            label: canvas.closest('.bg-dark-secondary').querySelector('h2').textContent,
-                            data: chartData.history,
-                            borderColor: chartData.change_percent >= 0 ? '#4CAF50' : '#EF4444',
-                            tension: 0.1,
-                            pointRadius: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: true }
-                        },
-                        scales: {
-                            x: {
-                                grid: { color: '#333' },
-                                ticks: { color: '#999' }
-                            },
-                            y: {
-                                grid: { color: '#333' },
-                                ticks: { color: '#999' }
-                            }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error loading chart:', error);
-                canvas.parentElement.innerHTML = `
-                <div class="bg-red-900/50 rounded-lg p-4 text-center">
-                    <p class="text-red-200">차트 데이터를 불러오는데 실패했습니다.</p>
-                </div>`;
+        // 수신된 데이터를 즉시 차트로 변환
+        results.forEach(result => {
+            if (result.error) {
+                console.error(`Error loading chart for ${result.symbol}:`, result.error);
+                result.canvas.parentElement.innerHTML = `
+                    <div class="bg-red-900/50 rounded-lg p-4 text-center">
+                        <p class="text-red-200">차트 데이터를 불러오는데 실패했습니다.</p>
+                    </div>`;
+            } else {
+                createChart(result.canvas, result.data);
             }
-        }
+        });
     };
 
     document.addEventListener('DOMContentLoaded', initializeCharts);
