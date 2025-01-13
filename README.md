@@ -84,7 +84,10 @@ docker run -d \
   --restart unless-stopped \
   -p 30000:30000 \
   -v /app/data:/data \
-  mydashboard:latest
+  siejwkaodj/mydashboard:latest
+
+# 또는 한줄 명령어
+docker run -d --name mydashboard --restart unless-stopped -p 30000:30000 -v /app/data:/data siejwkaodj/mydashboard:latest
 ```
 
 ### 시스템 요구사항 및 리소스 사용량
