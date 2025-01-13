@@ -1,33 +1,3 @@
-const rootDiv = document.getElementById('root');
-
-// async function fetchGTrendData() {
-//     const response = await fetch('https://trends.google.co.kr/trending/rss?geo=KR');
-//     // XML 응답을 텍스트로 받아옴
-//     const xmlText = await response.text();
-//     // DOMParser를 사용하여 XML 파싱
-//     const parser = new DOMParser();
-//     const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-//     // XML에서 필요한 데이터 추출 예시
-//     const items = Array.from(xmlDoc.getElementsByTagName('item')).map(item => ({
-//         title: item.getElementsByTagName('title')[0]?.textContent,
-//         description: item.getElementsByTagName('description')[0]?.textContent
-//     }));
-//     return items;
-// }
-
-// rootDiv.innerText = 'Loading...';
-// fetchGTrendData().then(data => {
-//     // 데이터를 보기 좋게 표시
-//     rootDiv.innerHTML = data.map(item =>
-//         `<div>
-//             <h3>${item.title}</h3>
-//             <p>${item.description}</p>
-//          </div>`
-//     ).join('');
-// }).catch(err => {
-//     rootDiv.innerText = 'Error: ' + err;
-// });
-
 // 시계 관련 함수
 const updateClocks = () => {
     const clockContainer = document.getElementById('clock-container');
@@ -51,18 +21,20 @@ const updateClocks = () => {
     }).join('');
 };
 
-// 새로고침 타이머 관리 함수
+// 새로고침 타이머 관리 함수 수정
 const createRefreshTimer = (elementId, intervalMs) => {
     const timerElement = document.getElementById(elementId);
     let timeLeft = intervalMs / 1000;
+    let lastUpdate = new Date();
 
     const updateTimer = () => {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        timerElement.textContent = `(${minutes}:${seconds.toString().padStart(2, '0')})`;
+        timerElement.textContent = `(${minutes}:${seconds.toString().padStart(2, '0')}) - 마지막 업데이트: ${lastUpdate.toLocaleTimeString()}`;
         timeLeft -= 1;
         if (timeLeft < 0) {
             timeLeft = intervalMs / 1000;
+            lastUpdate = new Date();
         }
     };
 
@@ -84,16 +56,66 @@ const fetchTrends = async () => {
         const response = await fetch('http://localhost:30000/api/trends');
         const data = await response.json();
 
-        containerEl.innerHTML = data.trends.map(item => `
-            <div class="p-4 bg-dark-secondary rounded-lg">
-                <h3 class="text-xl mb-2">${item.title}</h3>
-                ${item['ht:picture'] ? `
-                    <img src="${item['ht:picture']}" alt="${item.title}" 
-                         class="object-cover rounded mb-2">
-                ` : ''}
-                <p class="text-sm text-gray-400">검색량: ${item['ht:approx_traffic']}</p>
-            </div>
-        `).join('');
+        console.log(data);
+
+        containerEl.innerHTML = data.trends.map(item => {
+            // const newsItems = item['ht:news_item'] || [];
+            const newsItems = Array.isArray(item['ht:news_item'])
+                ? item['ht:news_item']
+                : item['ht:news_item']
+                    ? [item['ht:news_item']]
+                    : [];
+
+            console.log(`newsItems for ${item.title}:`, newsItems);
+            return `
+                <div class="bg-dark-secondary rounded-lg overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start gap-4">
+                            <img src="${item['ht:picture'] || '/static/assets/no-image.png'}" 
+                                 alt="${item.title}" 
+                                 class="w-[100px] h-[100px] object-cover rounded">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold">${item.title}</h3>
+                                <p class="text-sm text-gray-400 mb-2">검색량: ${item['ht:approx_traffic']}</p>
+                                <button class="text-sm text-blue-400 hover:text-blue-300 transition-colors news-toggle"
+                                        data-target="news-${item.title.replace(/\s+/g, '-')}">
+                                    <span class="toggle-text" data-type="more">관련 뉴스 ${newsItems.length}개 보기</span>
+                                    <span class="toggle-text hidden" data-type="hide">관련 뉴스 접기</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="news-${item.title.replace(/\s+/g, '-')}" class="hidden border-t border-gray-700">
+                        ${newsItems.map(news => `
+                            <a href="${news['ht:news_item_url']}" target="_blank" 
+                               class="block p-4 hover:bg-gray-700 transition-colors border-b border-gray-700">
+                                <div class="flex gap-4 items-center">
+                                    <img src="${news['ht:news_item_picture'] || '/static/assets/no-image.png'}" 
+                                         alt="${news['ht:news_item_title']}"
+                                         class="w-16 h-16 object-cover rounded">
+                                    <div>
+                                        <h4 class="font-medium mb-1">${news['ht:news_item_title']}</h4>
+                                        <p class="text-sm text-gray-400">${news['ht:news_item_source']}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // 수정: 뉴스 토글 이벤트 리스너 개선
+        document.querySelectorAll('.news-toggle').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const targetId = button.dataset.target;
+                const targetEl = document.getElementById(targetId);
+                const toggleTexts = button.querySelectorAll('.toggle-text');
+
+                targetEl.classList.toggle('hidden');
+                toggleTexts.forEach(span => span.classList.toggle('hidden'));
+            });
+        });
 
         loadingEl.classList.add('hidden');
         containerEl.classList.remove('hidden');
@@ -173,11 +195,14 @@ const getStockName = (symbol) => {
 };
 
 // 초기화 및 이벤트 리스너
-document.addEventListener('DOMContentLoaded', () => {
-    // Chart.js CDN 추가
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-    document.head.appendChild(script);
+document.addEventListener('DOMContentLoaded', async () => {
+    // Chart.js 로딩 대기
+    await new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.onload = resolve;
+        document.head.appendChild(script);
+    });
 
     // 초기 데이터 로드
     updateClocks();
@@ -200,10 +225,11 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchStocks();
     }, REFRESH_INTERVAL);
 
-    // 새로고침 버튼 이벤트
+    // 새로고침 버튼 이벤트 수정
     document.getElementById('refresh-trends').addEventListener('click', () => {
         const timerEl = document.getElementById('trends-refresh-timer');
-        timerEl.textContent = '(5:00)';
+        const now = new Date();
+        timerEl.textContent = `(5:00) - 마지막 업데이트: ${now.toLocaleTimeString()}`;
         fetchTrends();
     });
 });

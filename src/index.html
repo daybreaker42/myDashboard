@@ -20,104 +20,145 @@
             }
         }
     </script>
+    <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico">
 </head>
 
 <body class="bg-dark-bg text-gray-200 min-h-screen">
-    <div id="root" class="container mx-auto px-8 py-8 max-w-7xl">
-        <!-- 시계 섹션 -->
-        <section id="clock-section" class="mb-12">
-            <h2 class="text-2xl font-bold mb-4">World Clock</h2>
-            <div id="clock-container" class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                <!-- 자바스크립트로 시계들이 여기에 추가됨 -->
+    <!-- 네비게이션 바 추가 -->
+    <nav class="bg-dark-secondary fixed w-full z-50">
+        <div class="container mx-auto px-8 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">myDashboard</h1>
+            <div class="flex items-center gap-6">
+                <a href="/markets" class="hover:text-blue-400 transition-colors">Markets</a>
+                <a href="/about" class="hover:text-blue-400 transition-colors">About</a>
             </div>
-        </section>
+        </div>
+    </nav>
 
-        <!-- Google Trends 섹션 -->
-        <section id="trends-section" class="mb-12">
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center gap-4">
-                    <h2 class="text-2xl font-bold">Google Trends</h2>
-                    <!-- 새로고침 타이머 추가 -->
-                    <span id="trends-refresh-timer" class="text-sm text-gray-400">
-                        (5:00)
-                    </span>
-                </div>
-                <button id="refresh-trends"
-                    class="bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    새로고침
-                </button>
-            </div>
-            <!-- 로딩 상태 표시 -->
-            <div id="trends-loading" class="hidden">
-                <div class="flex justify-center items-center h-32">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                </div>
-            </div>
-            <!-- 에러 상태 표시 -->
-            <div id="trends-error" class="hidden">
-                <div class="bg-red-900/50 rounded-lg p-4 text-center">
-                    <p class="text-red-200">데이터를 불러오는데 실패했습니다.</p>
-                </div>
-            </div>
-            <!-- 이미지 처리 방식 수정된 컨테이너 -->
-            <div id="trends-container" class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                <!-- 컨테이너 높이 고정 및 이미지 처리 개선 -->
-                <template id="trend-item-template">
-                    <div class="bg-dark-secondary rounded-lg overflow-hidden h-[400px] flex flex-col">
-                        <div class="h-48 overflow-hidden">
-                            <img class="w-full h-full object-cover" alt="">
+    <!-- 메인 컨테이너: 2열 레이아웃 -->
+    <div class="container mx-auto px-8 pt-20 pb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- 왼쪽 열: 시계 및 트렌드 -->
+            <div class="lg:col-span-2 space-y-8">
+                <section id="clock-section">
+                    <h2 class="text-2xl font-bold mb-4">World Clock</h2>
+                    <div id="clock-container" class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        <!-- 자바스크립트로 시계들이 여기에 추가됨 -->
+                    </div>
+                </section>
+
+                <section id="trends-section">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-4">
+                            <h2 class="text-2xl font-bold">Google Trends</h2>
+                            <!-- 새로고침 타이머 추가 -->
+                            <span id="trends-refresh-timer" class="text-sm text-gray-400">
+                                (5:00)
+                            </span>
                         </div>
-                        <div class="p-6 flex-1 flex flex-col">
-                            <h3 class="text-xl font-semibold mb-2"></h3>
-                            <p class="text-sm text-gray-400 mt-auto"></p>
+                        <button id="refresh-trends"
+                            class="bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            새로고침
+                        </button>
+                    </div>
+                    <!-- 로딩 상태 표시 -->
+                    <div id="trends-loading" class="hidden">
+                        <div class="flex justify-center items-center h-32">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                         </div>
                     </div>
-                </template>
+                    <!-- 에러 상태 표시 -->
+                    <div id="trends-error" class="hidden">
+                        <div class="bg-red-900/50 rounded-lg p-4 text-center">
+                            <p class="text-red-200">데이터를 불러오는데 실패했습니다.</p>
+                        </div>
+                    </div>
+                    <!-- 이미지 처리 방식 수정된 컨테이너 -->
+                    <div id="trends-container" class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        <!-- 컨테이너 높이 고정 및 이미지 처리 개선 -->
+                        <template id="trend-item-template">
+                            <a href=""
+                                class="block bg-dark-secondary rounded-lg overflow-hidden hover:bg-gray-700 transition-colors">
+                                <div class="flex p-4 gap-4 items-center">
+                                    <img class="w-[100px] h-[100px] object-cover rounded" alt="">
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold mb-2"></h3>
+                                        <p class="text-sm text-gray-400"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </section>
             </div>
-        </section>
 
-        <!-- 주식 지표 섹션 -->
-        <section id="stocks-section" class="mb-12">
-            <div class="flex items-center gap-4 mb-6">
-                <h2 class="text-2xl font-bold">Market Indicators</h2>
-                <!-- 새로고침 타이머 추가 -->
-                <span id="stocks-refresh-timer" class="text-sm text-gray-400">
-                    (5:00)
-                </span>
+            <!-- 오른쪽 열: 주식 지표 -->
+            <div class="lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)]">
+                <section id="stocks-section" class="h-full overflow-y-auto">
+                    <div class="flex items-center gap-4 mb-6">
+                        <h2 class="text-2xl font-bold">Market Indicators</h2>
+                        <!-- 새로고침 타이머 추가 -->
+                        <span id="stocks-refresh-timer" class="text-sm text-gray-400">
+                            (5:00)
+                        </span>
+                    </div>
+                    <!-- 로딩 상태 표시 -->
+                    <div id="stocks-loading" class="hidden">
+                        <div class="flex justify-center items-center h-32">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                        </div>
+                    </div>
+                    <!-- 에러 상태 표시 -->
+                    <div id="stocks-error" class="hidden">
+                        <div class="bg-red-900/50 rounded-lg p-4 text-center">
+                            <p class="text-red-200">데이터를 불러오는데 실패했습니다.</p>
+                        </div>
+                    </div>
+                    <div id="stocks-container" class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        <!-- 자바스크립트로 주식 지표들이 여기에 추가됨 -->
+                    </div>
+                </section>
             </div>
-            <!-- 로딩 상태 표시 -->
-            <div id="stocks-loading" class="hidden">
-                <div class="flex justify-center items-center h-32">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                </div>
-            </div>
-            <!-- 에러 상태 표시 -->
-            <div id="stocks-error" class="hidden">
-                <div class="bg-red-900/50 rounded-lg p-4 text-center">
-                    <p class="text-red-200">데이터를 불러오는데 실패했습니다.</p>
-                </div>
-            </div>
-            <div id="stocks-container" class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                <!-- 자바스크립트로 주식 지표들이 여기에 추가됨 -->
-            </div>
-        </section>
-
-        <!-- About 섹션 -->
-        <section id="about-section" class="bg-dark-secondary p-8 rounded-lg">
-            <h2 class="text-2xl font-bold mb-4">About</h2>
-            <div class="space-y-2">
-                <p>제작일자: 250114</p>
-                <p>제작자: HanSeongJun</p>
-                <p>사용된 기술:</p>
-                <ul class="list-disc list-inside pl-4">
-                    <li>FastAPI</li>
-                    <li>Uvicorn</li>
-                    <li>TailwindCSS</li>
-                    <li>Local Storage</li>
-                </ul>
-            </div>
-        </section>
+        </div>
     </div>
+
+    <!-- About 섹션 -->
+    <section id="about-section" class="bg-dark-secondary p-8 rounded-lg">
+        <h2 class="text-2xl font-bold mb-4">About</h2>
+        <div class="space-y-2">
+            <p>제작일자: 250114</p>
+            <p>제작자: HanSeongJun</p>
+            <p>사용된 기술:</p>
+            <ul class="list-disc list-inside pl-4">
+                <li>FastAPI</li>
+                <li>Uvicorn</li>
+                <li>TailwindCSS</li>
+                <li>Local Storage</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 푸터 추가 -->
+    <footer class="bg-dark-secondary py-6 mt-auto">
+        <div class="container mx-auto px-8">
+            <div class="flex justify-between items-center">
+                <div class="text-sm text-gray-400">
+                    © 2025 myDashboard by HanSeongJun
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/daybreaker42/mydashboard"
+                        class="hover:text-blue-400 transition-colors flex items-center gap-2">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTgiIGhlaWdodD0iOTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik00OC44NTQgMEMyMS44MzkgMCAwIDIyIDAgNDkuMjE3YzAgMjEuNzU2IDEzLjk5MyA0MC4xNzIgMzMuNDA1IDQ2LjY5IDIuNDI3LjQ5IDMuMzE2LTEuMDU5IDMuMzE2LTIuMzYyIDAtMS4xNDEtLjA4LTUuMDUyLS4wOC05LjEyNy0xMy41OSAyLjkzNC0xNi40Mi01Ljg2Ny0xNi40Mi01Ljg2Ny0yLjE4NC01LjcwNC01LjQyLTcuMTctNS40Mi03LjE3LTQuNDQ4LTMuMDE1LjMyNC0zLjAxNS4zMjQtMy4wMTUgNC45MzQuMzI2IDcuNTIzIDUuMDUyIDcuNTIzIDUuMDUyIDQuMzY3IDcuNDk2IDExLjQwNCA1LjM3OCAxNC4yMzUgNC4wNzQuNDA0LTMuMTc4IDEuNjk5LTUuMzc4IDMuMDc0LTYuNi0xMC44MzktMS4xNDEtMjIuMjQzLTUuMzc4LTIyLjI0My0yNC4yODMgMC01LjM3OCAxLjk0LTkuNzc4IDUuMDE0LTEzLjItLjQ4NS0xLjIyMi0yLjE4NC02LjI3NS40ODYtMTMuMDM4IDAgMCA0LjEyNS0xLjMwNCAxMy40MjYgNS4wNTJhNDYuOTcgNDYuOTcgMCAwIDEgMTIuMjE0LTEuNjNjNC4xMjUgMCA4LjMzLjU3MSAxMi4yMTMgMS42MyA5LjMwMi02LjM1NiAxMy40MjctNS4wNTIgMTMuNDI3LTUuMDUyIDIuNjcgNi43NjMuOTcgMTEuODE2LjQ4NSAxMy4wMzggMy4xNTUgMy40MjIgNS4wMTUgNy44MjIgNS4wMTUgMTMuMiAwIDE4LjkwNS0xMS40MDQgMjMuMDYtMjIuMzI0IDI0LjI4MyAxLjc4IDEuNTQ4IDMuMzE2IDQuNDgxIDMuMzE2IDkuMTI2IDAgNi42LS4wOCAxMS44OTctLjA4IDEzLjUyNiAwIDEuMzA0Ljg5IDIuODUzIDMuMzE2IDIuMzY0IDE5LjQxMi02LjUyIDMzLjQwNS0yNC45MzUgMzMuNDA1LTQ2LjY5MUM5Ny43MDcgMjIgNzUuNzg4IDAgNDguODU0IDB6IiBmaWxsPSIjZmZmIi8+PC9zdmc+"
+                            alt="GitHub" class="w-5 h-5">
+                        GitHub
+                    </a>
+                    <a href="/static/licenses.txt" class="hover:text-blue-400 transition-colors">
+                        Licenses
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
     <script src="../static/script.js"></script>
 </body>
 

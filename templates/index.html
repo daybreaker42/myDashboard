@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}myDashboard{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- 기존 index.html의 main 컨텐츠 부분 -->
+<div class="container mx-auto px-8 pt-20 pb-16">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- 왼쪽 열: 시계 및 트렌드 -->
+        <div class="lg:col-span-2 space-y-8">
+            <section id="clock-section">
+                <h2 class="text-2xl font-bold mb-4">World Clock</h2>
+                <div id="clock-container" class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- 자바스크립트로 시계들이 여기에 추가됨 -->
+                </div>
+            </section>
+
+            <section id="trends-section">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-4">
+                        <h2 class="text-2xl font-bold">Google Trends</h2>
+                        <!-- 새로고침 타이머 추가 -->
+                        <span id="trends-refresh-timer" class="text-sm text-gray-400">
+                            (5:00)
+                        </span>
+                    </div>
+                    <button id="refresh-trends"
+                        class="bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        새로고침
+                    </button>
+                </div>
+                <!-- 로딩 상태 표시 -->
+                <div id="trends-loading" class="hidden">
+                    <div class="flex justify-center items-center h-32">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                    </div>
+                </div>
+                <!-- 에러 상태 표시 -->
+                <div id="trends-error" class="hidden">
+                    <div class="bg-red-900/50 rounded-lg p-4 text-center">
+                        <p class="text-red-200">데이터를 불러오는데 실패했습니다.</p>
+                    </div>
+                </div>
+                <!-- 이미지 처리 방식 수정된 컨테이너 -->
+                <div id="trends-container" class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- 컨테이너 높이 고정 및 이미지 처리 개선 -->
+                    <template id="trend-item-template">
+                        <a href=""
+                            class="block bg-dark-secondary rounded-lg overflow-hidden hover:bg-gray-700 transition-colors">
+                            <div class="flex p-4 gap-4 items-center">
+                                <img class="w-[100px] h-[100px] object-cover rounded" alt="">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold mb-2"></h3>
+                                    <p class="text-sm text-gray-400"></p>
+                                </div>
+                            </div>
+                        </a>
+                    </template>
+                </div>
+            </section>
+        </div>
+
+        <!-- 오른쪽 열: 주식 지표 -->
+        <div class="lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)]">
+            <section id="stocks-section" class="h-full overflow-y-auto">
+                <div class="flex items-center gap-4 mb-6">
+                    <h2 class="text-2xl font-bold">Market Indicators</h2>
+                    <!-- 새로고침 타이머 추가 -->
+                    <span id="stocks-refresh-timer" class="text-sm text-gray-400">
+                        (5:00)
+                    </span>
+                </div>
+                <!-- 로딩 상태 표시 -->
+                <div id="stocks-loading" class="hidden">
+                    <div class="flex justify-center items-center h-32">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                    </div>
+                </div>
+                <!-- 에러 상태 표시 -->
+                <div id="stocks-error" class="hidden">
+                    <div class="bg-red-900/50 rounded-lg p-4 text-center">
+                        <p class="text-red-200">데이터를 불러오는데 실패했습니다.</p>
+                    </div>
+                </div>
+                <div id="stocks-container" class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- 자바스크립트로 주식 지표들이 여기에 추가됨 -->
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/script.js') }}"></script>
+{% endblock %}

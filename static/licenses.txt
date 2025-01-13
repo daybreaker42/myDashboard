@@ -1,0 +1,32 @@
+myDashboard License Information
+
+This project incorporates the following open source software:
+
+1. FastAPI
+   License: MIT License
+   Copyright (c) 2018 Sebastián Ramírez
+   https://github.com/tiangolo/fastapi/blob/master/LICENSE
+
+2. Tailwind CSS
+   License: MIT License
+   Copyright (c) Tailwind Labs, Inc.
+   https://github.com/tailwindlabs/tailwindcss/blob/master/LICENSE
+
+3. Chart.js
+   License: MIT License
+   Copyright (c) 2014-2022 Chart.js Contributors
+   https://github.com/chartjs/Chart.js/blob/master/LICENSE.md
+
+4. yfinance
+   License: Apache License 2.0
+   Copyright (c) 2019 Ran Aroussi
+   https://github.com/ranaroussi/yfinance/blob/main/LICENSE.txt
+
+5. Uvicorn
+   License: BSD 3-Clause License
+   Copyright (c) 2017-present, Encode
+   https://github.com/encode/uvicorn/blob/master/LICENSE.md
+
+All other code and content:
+Copyright (c) 2025 HanSeongJun
+All rights reserved.

@@ -1,0 +1,20 @@
+<footer class="bg-dark-secondary py-6 mt-auto">
+    <div class="container mx-auto px-8">
+        <div class="flex justify-between items-center">
+            <div class="text-sm text-gray-400">
+                © 2025 myDashboard by HanSeongJun
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/daybreaker42/mydashboard"
+                    class="hover:text-blue-400 transition-colors flex items-center gap-2">
+                    <img src="{{ url_for('static', path='assets/github-mark-white.svg') }}" alt="GitHub"
+                        class="w-5 h-5">
+                    GitHub
+                </a>
+                <a href="{{ url_for('static', path='licenses.txt') }}" class="hover:text-blue-400 transition-colors">
+                    Licenses
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>

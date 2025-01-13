@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Markets - myDashboard{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<main class="container mx-auto px-8 py-12 flex-grow">
+    <h1 class="text-4xl font-bold mb-8">Market Indicators</h1>
+
+    <div id="markets-loading" class="flex justify-center items-center h-32">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+    </div>
+
+    <div id="markets-error" class="hidden bg-red-900/50 rounded-lg p-4 text-center">
+        <p class="text-red-200">데이터를 불러오는데 실패했습니다.</p>
+    </div>
+
+    <div id="markets-container" class="grid gap-8">
+        <!-- 자바스크립트로 차트가 여기에 추가됨 -->
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/markets.js"></script>
+{% endblock %}
+
+</html>
