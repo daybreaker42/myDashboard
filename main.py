@@ -88,4 +88,35 @@ async def about_page(request: Request):
 
 @app.get("/markets")
 async def markets_page(request: Request):
-    return templates.TemplateResponse("markets.html", {"request": request})
+    """시장 지표 페이지를 위한 초기 데이터를 서버사이드에서 렌더링"""
+    symbols = ['^IXIC', '^GSPC', '^DJI', '^VIX', '^FVX', '^TNX', '^TYX']
+    stock_data = {}
+    
+    try:
+        # 각 심볼별로 현재 데이터만 가져옴
+        for symbol in symbols:
+            ticker = yf.Ticker(symbol)
+            hist = ticker.history(period="1d")  # 오늘 데이터만 가져옴
+            
+            if not hist.empty:
+                stock_data[symbol] = {
+                    "current_price": float(hist['Close'].iloc[-1]),
+                    "change_percent": float((hist['Close'].iloc[-1] - hist['Open'].iloc[0]) / hist['Open'].iloc[0] * 100),
+                    "name": {  # 심볼별 한글 이름 매핑
+                        '^IXIC': '나스닥',
+                        '^GSPC': 'S&P 500',
+                        '^DJI': '다우존스',
+                        '^VIX': 'VIX',
+                        '^FVX': '미국 5년물',
+                        '^TNX': '미국 10년물',
+                        '^TYX': '미국 30년물'
+                    }.get(symbol, symbol)
+                }
+    except Exception as e:
+        print(f"Error fetching initial stock data: {e}")
+        stock_data = {}  # 에러 발생 시 빈 데이터 전달
+
+    return templates.TemplateResponse(
+        "markets.html", 
+        {"request": request, "stock_data": stock_data}
+    )

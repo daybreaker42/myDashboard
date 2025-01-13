@@ -1,31 +1,108 @@
 {% extends "base.html" %}
 
 {% block title %}Markets - myDashboard{% endblock %}
+
 {% block extra_head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 
 {% block content %}
-
 <main class="container mx-auto px-8 py-12 flex-grow">
     <h1 class="text-4xl font-bold mb-8">Market Indicators</h1>
 
-    <div id="markets-loading" class="flex justify-center items-center h-32">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+    {% if not stock_data %}
+    <div class="bg-red-900/50 rounded-lg p-4 text-center">
+        <p class="text-red-200">현재 시장 데이터를 불러올 수 없습니다.</p>
     </div>
-
-    <div id="markets-error" class="hidden bg-red-900/50 rounded-lg p-4 text-center">
-        <p class="text-red-200">데이터를 불러오는데 실패했습니다.</p>
+    {% else %}
+    <div class="grid gap-8">
+        {% for symbol, info in stock_data.items() %}
+        <div class="bg-dark-secondary p-6 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">{{ info.name }}</h2>
+                <p
+                    class="text-2xl font-mono {% if info.change_percent >= 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                    {{ "%.2f"|format(info.current_price) }}
+                    ({{ "%+.2f"|format(info.change_percent) }}%)
+                </p>
+            </div>
+            <div class="h-96" data-loading="true">
+                <canvas id="chart-{{ symbol }}" data-symbol="{{ symbol }}" class="market-chart"></canvas>
+                <div class="flex justify-center items-center h-full chart-loading">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-
-    <div id="markets-container" class="grid gap-8">
-        <!-- 자바스크립트로 차트가 여기에 추가됨 -->
-    </div>
+    {% endif %}
 </main>
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/markets.js"></script>
-{% endblock %}
+<script>
+    const initializeCharts = async () => {
+        const charts = document.querySelectorAll('.market-chart');
 
-</html>
+        for (const canvas of charts) {
+            const symbol = canvas.dataset.symbol;
+            try {
+                const response = await fetch(`http://localhost:30000/api/stocks?full=true&symbol=${symbol}`);
+                const data = await response.json();
+                const chartData = data[symbol];
+
+                const container = canvas.parentElement;
+                container.querySelector('.chart-loading').style.display = 'none';
+
+                new Chart(canvas.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: Array(chartData.history.length).fill('').map((_, i) => {
+                            const date = new Date();
+                            date.setDate(date.getDate() - (chartData.history.length - i - 1));
+                            return date.toLocaleDateString();
+                        }),
+                        datasets: [{
+                            label: canvas.closest('.bg-dark-secondary').querySelector('h2').textContent,
+                            data: chartData.history,
+                            borderColor: chartData.change_percent >= 0 ? '#4CAF50' : '#EF4444',
+                            tension: 0.1,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: true }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: '#333' },
+                                ticks: { color: '#999' }
+                            },
+                            y: {
+                                grid: { color: '#333' },
+                                ticks: { color: '#999' }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading chart:', error);
+                canvas.parentElement.innerHTML = `
+                <div class="bg-red-900/50 rounded-lg p-4 text-center">
+                    <p class="text-red-200">차트 데이터를 불러오는데 실패했습니다.</p>
+                </div>`;
+            }
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', initializeCharts);
+</script>
+{% endblock %}
