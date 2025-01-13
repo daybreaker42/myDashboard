@@ -22,10 +22,14 @@
   - [서울, GMT+9] 2025년 1월 1일 11:11:11 [오전]
   - [뉴욕, GMT-5] 2025년 1월 1일 11:11:11 [오전]
   - [영국, GMT] 2025년 1월 1일 11:11:11 [오전]
-- google trends (GET / <https://trends.google.co.kr/trending/rss?geo=KR>)
+- 실시간 google trends (GET / <https://trends.google.co.kr/trending/rss?geo=KR>)
   - 예시 데이터 - [example-data.xml](./example-data.xml)
   - 새로고침 버튼 있었으면 좋겠음
   - 격자 형식으로 이미지/내용을보여줬으면 좋겠음
+- daily google trends
+  - <https://trends.google.co.kr/trends/trendingsearches/daily/rss?geo=KR>
+  - 해당 데이터도 위에 데이터랑 형식 동일
+  - 단, 실시간이 아닌 하루 동안의 실시간 데이터인점이 차이가 있음.
 - 주요 주식 지표들 (나스닥, snp 500, 다우존스, VIX, 미국 5년물 국채, 미국 10년물 국채, 미국 30년물 국채)
   - 해당 지표들은 가능하면 그래프를 가져와 보여줬으면 좋겠음. (최근 3개월 변동 및 오늘 등락)
 - about page
@@ -45,8 +49,21 @@
 - 미니멀리즘
 - 반응형 웹 지원 (모바일, 데스크톱)
 
+## 보안 설계 특징
+
+- CORS 화이트리스트 정책 적용
+  - 허용된 출처: localhost:30000, 127.0.0.1:30000
+  - 허용된 HTTP 메서드: GET만 허용
+- 정적 파일 접근 제한
+- API 요청 속도 제한 적용
+
 ## 서버 실행 명령어
 
 ```bash
 uvicorn main:app --reload --port 30000
 ```
+
+## 기타 (해당 부분은 개발에 반영 X, 추후 참고용)
+
+- google trends RSS 피드가 하나 더 있음 - <https://trends.google.co.kr/trends/trendingsearches/daily/rss?geo=KR>
+  - daily인걸로 보아 1일간의 이슈들을 모아 보여주는듯

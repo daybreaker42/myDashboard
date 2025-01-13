@@ -13,12 +13,18 @@ from fastapi.templating import Jinja2Templates
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# CORS 설정
+# CORS 설정 부분 수정
+allowed_origins = [
+    "http://localhost:30000",  # 로컬 개발 환경
+    "http://127.0.0.1:30000",  # 로컬 대체 주소
+]
+
+# CORS 미들웨어 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,  # 화이트리스트 방식으로 변경
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET"],  # 필요한 HTTP 메서드만 허용
     allow_headers=["*"],
 )
 
@@ -30,6 +36,15 @@ async def get_trends():
     # Google Trends RSS 피드에서 데이터 가져오기
     async with httpx.AsyncClient() as client:
         response = await client.get("https://trends.google.co.kr/trending/rss?geo=KR")
+        data = xmltodict.parse(response.text)
+        items = data['rss']['channel']['item']
+        return {"trends": items}
+
+@app.get("/api/trends/daily")
+async def get_daily_trends():
+    # Google Daily Trends RSS 피드에서 데이터 가져오기
+    async with httpx.AsyncClient() as client:
+        response = await client.get("https://trends.google.co.kr/trends/trendingsearches/daily/rss?geo=KR")
         data = xmltodict.parse(response.text)
         items = data['rss']['channel']['item']
         return {"trends": items}
