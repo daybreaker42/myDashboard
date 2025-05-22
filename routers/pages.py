@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
 import asyncio
-from .stocks import fetch_stock_data
+from apis import stocks
 
 router = APIRouter()
 
@@ -10,7 +10,7 @@ async def markets_page(request: Request):
     symbols = ['^IXIC', '^GSPC', '^DJI', '^VIX', '^FVX', '^TNX', '^TYX']
     
     # 모든 심볼의 데이터를 병렬로 가져오기
-    tasks = [fetch_stock_data(request, symbol) for symbol in symbols]
+    tasks = [stocks.fetch_stock_data(request, symbol) for symbol in symbols]
     results = await asyncio.gather(*tasks)
     
     # 결과를 딕셔너리로 변환

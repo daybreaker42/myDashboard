@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 import os
 
 # 라우터 임포트
-import routers
+from routers import trends, stocks, pages
 
 # 프로젝트의 기본 디렉토리 경로를 설정합니다. __file__은 현재 파일(main.py)의 경로를 나타냅니다.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # main.py 파일이 위치한 디렉토리의 절대 경로
@@ -54,6 +54,6 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")  # 절대 경로 사용
 
 # 라우터 등록
-app.include_router(routers.trends.router)
-app.include_router(routers.stocks.router)
-app.include_router(routers.pages.router)
+app.include_router(trends.router)
+app.include_router(stocks.router)
+app.include_router(pages.router)
