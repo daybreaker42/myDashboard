@@ -35,23 +35,11 @@
                             전체 뉴스 펼치기
                         </button>
                         <!-- 탭 버튼 -->
-                        <div id="trends-mode" class="flex rounded-lg overflow-hidden">
-                            <button id="realtime-tab"
-                                class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-                                실시간
-                            </button>
-                            <button id="daily-tab"
-                                class="px-4 py-2 bg-dark-secondary text-gray-400 hover:bg-gray-700 transition-colors">
-                                일간
-                            </button>
-                        </div>
                     </div>
                 </div>
                 <!-- 로딩 상태 표시 -->
-                <div id="trends-loading" class="hidden">
-                    <div class="flex justify-center items-center h-32">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                    </div>
+                <div id="trends-loading" class="hidden flex justify-center items-center">
+                    {% include 'components/loading.html' %}
                 </div>
                 <!-- 에러 상태 표시 -->
                 <div id="trends-error" class="hidden">
@@ -80,10 +68,8 @@
                     </span>
                 </div>
                 <!-- 로딩 상태 표시 -->
-                <div id="stocks-loading" class="hidden">
-                    <div class="flex justify-center items-center h-32">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                    </div>
+                <div id="stocks-loading" class="hidden flex justify-center items-center">
+                    {% include 'components/loading.html' %}
                 </div>
                 <!-- 에러 상태 표시 -->
                 <div id="stocks-error" class="hidden">

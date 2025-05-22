@@ -73,7 +73,6 @@ const createRefreshTimer = (elementId, intervalMs) => {
 };
 
 // Google Trends 데이터 가져오기 - 실시간 / 일간
-let isRealTime = true;
 const trendsModeElment = document.querySelector('#trends-mode');
 const realtimeTab = document.querySelector('#realtime-tab');
 const dailyTab = document.querySelector('#daily-tab');
@@ -82,18 +81,10 @@ const activeTabClassList = ['bg-blue-600', 'text-white', 'hover:bg-blue-700'];
 const inactiveTabClassList = ['bg-dark-secondary', 'text-gray-400', 'hover:bg-gray-700'];
 
 trendsModeElment.addEventListener('click', () => {
-    isRealTime = !isRealTime;
-    if (isRealTime) {
-        realtimeTab.classList.add(...activeTabClassList);
-        realtimeTab.classList.remove(...inactiveTabClassList);
-        dailyTab.classList.remove(...activeTabClassList);
-        dailyTab.classList.add(...inactiveTabClassList);
-    } else {
-        realtimeTab.classList.remove(...activeTabClassList);
-        realtimeTab.classList.add(...inactiveTabClassList);
-        dailyTab.classList.add(...activeTabClassList);
-        dailyTab.classList.remove(...inactiveTabClassList);
-    }
+    realtimeTab.classList.add(...activeTabClassList);
+    realtimeTab.classList.remove(...inactiveTabClassList);
+    dailyTab.classList.remove(...activeTabClassList);
+    dailyTab.classList.add(...inactiveTabClassList);
 
     // 타이머 리셋 및 데이터 새로 가져오기
     createRefreshTimer('trends-refresh-timer', 300000);
@@ -111,7 +102,7 @@ const fetchTrends = async () => {
         errorEl.classList.add('hidden');
         containerEl.classList.add('hidden');
 
-        const response = isRealTime ? await fetch('http://localhost:30000/api/trends') : await fetch('http://localhost:30000/api/trends/daily');
+        const response = await fetch('http://localhost:30000/api/trends');
         const data = await response.json();
 
         // console.log(data);
