@@ -64,7 +64,7 @@
 ### 개발 환경
 
 ```bash
-uvicorn main:app --reload --port 30000
+fastapi dev main.py
 ```
 
 ### 운영 환경 및 배포 계획
@@ -111,24 +111,27 @@ docker run -d --name mydashboard --restart unless-stopped -p 30000:30000 -v /app
 
 ### 확장 계획
 
-1. 인증 및 권한
+1. **유익한 정보 추가 (대시보드 기능 확장)**
+   - **오늘의 날씨 정보**: OpenWeatherMap API 또는 기상청 API를 활용하여 현재 날씨, 예보 표시
+   - **오늘의 주요 일정**: Google Calendar API, Microsoft Outlook Calendar API 등과 연동하여 일정 표시
+   - **주요 환율 정보**: ExchangeRate-API 등을 활용하여 주요 통화 환율 변동 표시
+   - **개인화된 할 일 목록 (To-do List)**: 사용자가 직접 할 일을 추가하고 관리할 수 있는 기능
+
+2. 인증 및 권한
    - JWT 기반 사용자 인증
    - Role 기반 접근 제어 (RBAC)
    - OAuth2.0 소셜 로그인 지원
 
-2. 성능 최적화
-   - Redis 캐시 도입
-     - API 응답 캐싱
-     - 세션 관리
-   - CDN 적용 (정적 자원)
-
 3. 데이터 저장
-   - PostgreSQL DB 도입
+   - **MariaDB 도입**: To-do List 등 사용자 데이터 저장 및 관리
    - 사용자별 설정 저장
    - 즐겨찾기 기능
-   - 개인화된 대시보드
+   - 개인화된 대시보드 레이아웃 저장
 
-4. 모니터링
+4. 성능 최적화
+   - CDN 적용 (정적 자원)
+
+5. 모니터링
    - Prometheus + Grafana 도입
    - API 성능 모니터링
    - 리소스 사용량 추적
@@ -137,6 +140,8 @@ docker run -d --name mydashboard --restart unless-stopped -p 30000:30000 -v /app
 
 - google trends RSS 피드가 하나 더 있음 - <https://trends.google.co.kr/trends/trendingsearches/daily/rss?geo=KR>
   - daily인걸로 보아 1일간의 이슈들을 모아 보여주는듯
+- **추가 개발 고려 사항:**
+  - Redis 캐시 도입 (API 응답 캐싱, 세션 관리)
 
 ### 리펙토링 고려사항
 
